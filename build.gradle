@@ -30,6 +30,11 @@ allprojects {
         mavenCentral()
         google()
     }
+
+    // This forces the Java compiler to silence the obsolete source/target warnings project-wide
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:-options"
+    }
 }
 
 repositories {
