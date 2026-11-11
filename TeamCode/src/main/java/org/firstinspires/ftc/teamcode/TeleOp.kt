@@ -22,9 +22,13 @@ class TeleOp : LinearOpMode() {
     private var flywheelOn = false             // Remembers if the flywheel switch is ON or OFF
     private var lastXButtonState = false       // Tracking variable to handle button edge detection
 
+    // Toggle Variables for the Intake
+    private var intakeOn = false               // Remembers if the intake switch is ON or OFF
+    private var lastRightBumperState = false   // Tracking variable to handle bumper edge detection
+
     override fun runOpMode() {
         flywheel = hardwareMap.get(DcMotor::class.java, "flywheel")
-        // intake = hardwareMap.get(DcMotor::class.java, "intake") // Hidden until intake mounted
+        intake = hardwareMap.get(DcMotor::class.java, "intake")
         servo = hardwareMap.get(CRServo::class.java, "servo")
         frontLeft = hardwareMap.get(DcMotor::class.java, "FL")
         frontRight = hardwareMap.get(DcMotor::class.java, "FR")
@@ -34,6 +38,7 @@ class TeleOp : LinearOpMode() {
         // Establishing the direction and mode for the auxiliary systems
         flywheel!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
         flywheel!!.direction = DcMotorSimple.Direction.REVERSE
+        intake!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
         servo!!.power = 0.0
 
@@ -43,18 +48,14 @@ class TeleOp : LinearOpMode() {
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
-                // Evaluates if the X button was pressed to turn the flywheel on/off
                 updateFlywheelToggle()
-
-                if (!gamepad1.dpad_right && !gamepad1.dpad_left) {
-                    servo!!.power = 0.0
-                }
-
-                controlIntakeAndServo()
+                controlIntake()
+                controlServo()
                 mecanumDrive()
 
                 telemetry.addData("Flywheel Switch", if (flywheelOn) "ON" else "OFF")
                 telemetry.addData("Flywheel Velocity", (flywheel as DcMotorEx).velocity)
+                telemetry.addData("Intake Switch", if (intakeOn) "ON" else "OFF")
                 telemetry.update()
             }
         }
@@ -78,19 +79,32 @@ class TeleOp : LinearOpMode() {
         }
     }
 
-    private fun controlIntakeAndServo() {
-        if (gamepad1.right_bumper) {
-            intake!!.power = 1.0
-            servo!!.power = -2.0
-        } else if (gamepad1.left_bumper) {
+    private fun controlIntake() {
+        val currentRightBumper = gamepad1.right_bumper
+
+        // Edge detection to toggle intake ON/OFF with a single press
+        if (currentRightBumper && !lastRightBumperState) {
+            intakeOn = !intakeOn
+        }
+        lastRightBumperState = currentRightBumper
+
+        // Left bumper acts as an instant reverse override to clear jams
+        if (gamepad1.left_bumper) {
             intake!!.power = -1.0
-            servo!!.power = 2.0
+        } else if (intakeOn) {
+            intake!!.power = 1.0
         } else {
             intake!!.power = 0.0
+        }
+    }
 
-            if (!gamepad1.dpad_right && !gamepad1.dpad_left) {
-                servo!!.power = 0.0
-            }
+    private fun controlServo() {
+        if (gamepad1.right_trigger > 0.1) {
+            servo!!.power = -1.0
+        } else if (gamepad1.left_trigger > 0.1) {
+            servo!!.power = 1.0
+        } else {
+            servo!!.power = 0.0
         }
     }
 
