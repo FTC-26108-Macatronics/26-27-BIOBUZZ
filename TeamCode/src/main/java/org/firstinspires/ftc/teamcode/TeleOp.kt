@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Constants.Companion.FAR_VELOCITY
 @TeleOp(name = "TelOp")
 class TeleOp : LinearOpMode() {
     private var flywheel: DcMotor? = null
-    // private var intake: DcMotor? = null       // Hidden until intake is mounted
+    private var intake: DcMotor? = null
     private var servo: CRServo? = null
     private var frontLeft: DcMotor? = null
     private var frontRight: DcMotor? = null
@@ -80,13 +80,13 @@ class TeleOp : LinearOpMode() {
 
     private fun controlIntakeAndServo() {
         if (gamepad1.right_bumper) {
-            // intake!!.power = 1.0   // Ready, waiting for intake
+            intake!!.power = 1.0
             servo!!.power = -2.0
         } else if (gamepad1.left_bumper) {
-            // intake!!.power = -1.0  // Ready, waiting for intake
+            intake!!.power = -1.0
             servo!!.power = 2.0
         } else {
-            // intake!!.power = 0.0   // Ready, waiting for intake
+            intake!!.power = 0.0
 
             if (!gamepad1.dpad_right && !gamepad1.dpad_left) {
                 servo!!.power = 0.0
@@ -97,19 +97,19 @@ class TeleOp : LinearOpMode() {
     private fun motorSettings() {
         frontLeft!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         frontLeft!!.direction = DcMotorSimple.Direction.FORWARD
-        frontLeft!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE // Active braking update
+        frontLeft!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         frontRight!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         frontRight!!.direction = DcMotorSimple.Direction.REVERSE
-        frontRight!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE // Active braking update
+        frontRight!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backLeft!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         backLeft!!.direction = DcMotorSimple.Direction.FORWARD
-        backLeft!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE // Active braking update
+        backLeft!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backRight!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         backRight!!.direction = DcMotorSimple.Direction.REVERSE
-        backRight!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE // Active braking update
+        backRight!!.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
     }
 
     private fun mecanumDrive() {
