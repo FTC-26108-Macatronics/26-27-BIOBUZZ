@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import org.firstinspires.ftc.teamcode.Constants.Companion.FAR_VELOCITY
 
-@TeleOp(name = "TeleOp V2")
+@TeleOp(name = "TelOp")
 class TeleOp : LinearOpMode() {
     private var flywheel: DcMotor? = null
     // private var intake: DcMotor? = null       // Hidden until intake is mounted
