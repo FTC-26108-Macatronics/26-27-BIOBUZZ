@@ -65,9 +65,9 @@ class TeleOp : LinearOpMode() {
         lastRightBumperState = currentRightBumper
 
         if (gamepad1.left_bumper) {
-            mechanisms.setIntakePower(1.0)
+            mechanisms.setIntakePower(2.0)
         } else if (intakeOn) {
-            mechanisms.setIntakePower(-1.0)
+            mechanisms.setIntakePower(-2.0)
         } else {
             mechanisms.setIntakePower(0.0)
         }
